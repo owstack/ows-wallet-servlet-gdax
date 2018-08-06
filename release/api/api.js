@@ -7,9 +7,10 @@ angular.module('owsWalletPlugin.api.gdax', []).namespace().constant('GDAXServlet
 
 'use strict';
 
-angular.module('owsWalletPlugin.api.gdax').factory('GDAX', ['$log', 'ApiMessage', 'owsWalletPlugin.api.hello.GDAXServlet', 'owsWalletPluginClient.api.PluginAPIHelper', function ($log, ApiMessage,
+angular.module('owsWalletPlugin.api.gdax').factory('GDAX', ['ApiMessage', 'owsWalletPluginClient.api.ApiError', 'owsWalletPlugin.api.hello.GDAXServlet', 'owsWalletPluginClient.api.PluginApiHelper', function (ApiMessage,
+  /* @namespace owsWalletPluginClient.api */ ApiError,
   /* @namespace owsWalletPlugin.api.hello */ GDAXServlet,
-  /* @namespace owsWalletPluginClient.api */ PluginAPIHelper) {
+  /* @namespace owsWalletPluginClient.api */ PluginApiHelper) {
 
   GDAX.interval = {
     ONE_MINUTE: '1-minute',
@@ -54,13 +55,16 @@ angular.module('owsWalletPlugin.api.gdax').factory('GDAX', ['$log', 'ApiMessage'
 
     this.urls;
 
-    var servlet = new PluginAPIHelper(GDAXServlet);
+    var servlet = new PluginApiHelper(GDAXServlet);
     var apiRoot = servlet.apiRoot();
     var config = servlet.getConfig(configId);
 
     var onGDAXConnect = onConnect;
     if (typeof onGDAXConnect != 'function') {
-      throw new Error('You must provide an onConnect function to the constructor');
+      throw {
+        message: 'IMPLEMENTATION_ERROR',
+        detail: 'You must provide an onConnect function to the constructor'
+      };
     }
 
     doConnect();
@@ -79,8 +83,7 @@ angular.module('owsWalletPlugin.api.gdax').factory('GDAX', ['$log', 'ApiMessage'
         return response.data;
 
       }).catch(function(error) {
-        $log.error('GDAX.candles():' + error.message + ', detail:' + error.detail);
-        throw new Error(error.message);
+        throw new ApiError(error);
         
       });
     };
@@ -101,11 +104,9 @@ angular.module('owsWalletPlugin.api.gdax').factory('GDAX', ['$log', 'ApiMessage'
 
       return new ApiMessage(request).send().then(function(response) {
         self.urls = response.data.info.urls;
-
         onGDAXConnect();
 
       }).catch(function(error) {
-        $log.error('GDAX.connect():' + error.message + ', detail:' + error.detail);
         onGDAXConnect(error);
 
       });
