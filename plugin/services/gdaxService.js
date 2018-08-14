@@ -86,17 +86,8 @@ angular.module('owsWalletPlugin.services').factory('gdaxService', function($root
    */
 
   function setCredentials(config) {
-    /**
-     * Development: 'testnet'
-     * Production: 'livenet'
-     */
     credentials.NETWORK = 'livenet';
-
-    if (credentials.NETWORK.indexOf('testnet') >= 0) {
-      credentials.API = config.sandbox.api;
-    } else {
-      credentials.API = config.production.api;
-    };
+    credentials.API = config.production.api;
 
     // Using these credentials, create an API provider.
     createGdaxApiProvider();
