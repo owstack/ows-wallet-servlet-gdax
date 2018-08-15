@@ -1,27 +1,35 @@
 'use strict';
 
-angular.module('owsWalletPlugin.apiHandlers').service('getCandles', function(gdaxService) {
+angular.module('owsWalletPlugin.apiHandlers').service('getCandles', function(gdaxService,
+  /* @namespace owsWalletPluginClient.api */ Utils) {
 
-	var root = {};
+  var root = {};
+
+  var REQUIRED_PARAMS = [
+    'currencyPair',
+    'startDate',
+    'endDate',
+    'interval'
+  ];
 
   root.respond = function(message, callback) {
-    // Request parameters.
+    // Check required parameters.
+    var missing = Utils.checkRequired(REQUIRED_PARAMS, message.request.params);
+    if (missing.length > 0) {
+      message.response = {
+        statusCode: 400,
+        statusText: 'REQUEST_NOT_VALID',
+        data: {
+          message: 'The request does not include ' + missing.toString() + '.'
+        }
+      };
+      return callback(message);
+    }
+
     var currencyPair = message.request.params.currencyPair;
     var startDate = message.request.params.startDate;
     var endDate = message.request.params.endDate;
     var interval = message.request.params.interval;
-
-
-    if (!currencyPair || !startDate || !endDate || !interval) {
-      message.response = {
-        statusCode: 500,
-        statusText: 'REQUEST_NOT_VALID',
-        data: {
-          message: 'Must provide currencyPair, startDate, endDate, interval.'
-        }
-      };
-      return callback(message);
-    };
 
     gdaxService.candles(currencyPair, startDate, endDate, interval).then(function(response) {
 
