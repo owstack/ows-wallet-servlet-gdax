@@ -13,7 +13,7 @@
       "terms": "https://openwalletstack.org/terms",
       "git": "https://github.com/owstack/ows-wallet-servlet-gdax/"
     },
-    "commitHash": "25cce2d"
+    "commitHash": "4474201"
   },
   "permissions": {
     "delete": false
