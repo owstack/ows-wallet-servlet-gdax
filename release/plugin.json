@@ -3,7 +3,7 @@
     "id": "org.openwalletstack.wallet.plugin.servlet.gdax",
     "kind": "servlet",
     "name": "GDAX",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "An OWS Wallet servlet plugin for GDAX.",
     "author": "Open Wallet Stack",
     "url": {
@@ -13,7 +13,7 @@
       "terms": "https://openwalletstack.org/terms",
       "git": "https://github.com/owstack/ows-wallet-servlet-gdax/"
     },
-    "commitHash": "4474201"
+    "commitHash": "5cb8698"
   },
   "permissions": {
     "delete": false
